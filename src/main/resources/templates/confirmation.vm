@@ -1,0 +1,14 @@
+<html>
+
+<head></head>
+
+<body>
+<p>Dear ${firstName} ${lastName},</p>
+<p>Please click the following link to confirm your account.</b></p>
+<br>
+<a href="http://localhost:8080/knowledgeBase/api/confirmUser/${confirmationCode}">http://localhost:8080/knowledgeBase/api/confirmUser/${confirmationCode}</a>
+<br>
+<p>Thanks.</p>
+</body>
+
+</html>

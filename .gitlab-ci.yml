@@ -1,0 +1,79 @@
+before_script:
+  - IMAGE_TAG="$(echo $CI_COMMIT_SHA | head -c 8)"
+
+cache:
+  paths:
+    - maven.repository/
+
+variables:
+  MAVEN_OPTS: "-Djava.awt.headless=true -Dmaven.repo.local=maven.repository/"
+  MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version"
+  REPOSITORY_URL: 618050051552.dkr.ecr.ap-southeast-2.amazonaws.com/semanticspace
+#    REPOSITORY_URL: registry.gitlab.com/cuneytyvz/studyapp
+
+stages:
+#  - unit-test
+#  - integration-test
+  - build
+  - package
+  - deploy
+
+maven-unit-test:
+  image: maven:3-jdk-8
+  stage: unit-test
+  script:
+    - mvn $MAVEN_CLI_OPTS clean test -Pprod-test
+
+maven-integration-test:
+  image: maven:3-jdk-8
+  stage: integration-test
+  script:
+    - mvn $MAVEN_CLI_OPTS failsafe:integration-test -Pprod-test
+
+maven-build:
+  image: maven:3-jdk-8
+  stage: build
+  script: "mvn clean install"
+#  script: "mvn $MAVEN_CLI_OPTS install -Pprod -DskipTests"
+  artifacts:
+    paths:
+      - target/*.war
+
+build-image:
+  image: docker:latest
+  stage: package
+  services:
+    - name: docker:dind
+  script:
+    - apk add --no-cache curl jq python3 py-pip
+    - pip install awscli
+    - $(aws ecr get-login --no-include-email --region ap-southeast-2)
+    - docker build -t $REPOSITORY_URL:latest .
+    #      - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
+    - docker tag $REPOSITORY_URL:latest $REPOSITORY_URL:$IMAGE_TAG
+    - docker push $REPOSITORY_URL:latest
+    - docker push $REPOSITORY_URL:$IMAGE_TAG
+
+
+deploy:
+  image: python:latest
+  stage: deploy
+  script:
+    - pip install awscli
+    - echo $REPOSITORY_URL:$IMAGE_TAG
+    - aws ecs register-task-definition --region ap-southeast-2 --family SemanticSpace --cli-input-json file://aws/ecs-task-definition.json
+    - aws ecs update-service --region ap-southeast-2 --cluster SemanticSpace --service SemanticSpace  --task-definition SemanticSpace
+
+#  k8s-deploy:
+#    image: google/cloud-sdk
+#    stage: deploy
+#    script:
+#      - echo "$GOOGLE_KEY" > key.json
+#      - gcloud auth activate-service-account --key-file key.json
+#      - gcloud config set compute/zone europe-west1-c
+#      - gcloud config set project actuator-sample
+#      - gcloud config set container/use_client_certificate True
+#      - gcloud container clusters get-credentials actuator-sample
+#      - kubectl delete secret registry.gitlab.com
+#      - kubectl create secret docker-registry registry.gitlab.com --docker-server=https://registry.gitlab.com --docker-username=cuneytyvz --docker-password=$REGISTRY_PASSWD --docker-email=cuneytyvz@gmail.com
+#      - kubectl apply -f deployment.yml

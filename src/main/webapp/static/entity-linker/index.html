@@ -1,0 +1,233 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title> Relation Extraction | Home</title>
+
+    <link rel="stylesheet" type="text/css" href="static/entity-linker/style/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="static/entity-linker/style/style.css">
+
+    <script src="static/entity-linker/js/jquery.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script src="static/entity-linker/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.min.js"></script>
+    <script src="http://fgnass.github.io/spin.js/spin.min.js"></script>
+    <script src="static/entity-linker/js/angular-spinner.min.js"></script>
+
+</head>
+
+<body>
+<div class="page" ng-app="app" ng-controller="AppController">
+    <h1>Relation Extraction with Stanford CoreNLP</h1>
+
+    <div class="navigation">
+
+    </div>
+
+    <div class="body">
+
+        <div class="panel panel-default">
+
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+
+                <div class="row">
+                    <div class="col-md-3">
+
+                        <div class="form-group">
+                            <label>Search :</label>
+                            <input type="text" class="" id="search"/>
+                        </div>
+
+
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Browse Pdf File :</label>
+                            <input type="file" class="" id="file" webkitdirectory directory multiple/>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="button" class="btn btn-default" ng-click="extractRelationsFromPdf()"
+                               value="Extract Relations"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <textarea ng-model="text" class="form-control" style="height: 300px;"></textarea>
+        <br/>
+        <input type="button" class="btn btn-default" ng-click="extractRelationsFromText()"
+               value="Extract Relations"/>
+
+        <input type="button" class="btn btn-default" ng-click="filter()"
+               ng-value="filterButtonValue"/>
+
+        <span us-spinner spinner-key="spinner"></span>
+
+        <br/><br/>
+
+        <div class="row">
+            <div class="col-md-6">
+                <table class="table table-striped" style="border-style:none;">
+                    <tbody>
+                    <tr>
+                        <td><b>Subject</b></td>
+                        <td><b>Relation</b></td>
+                        <td><b>Object</b></td>
+                        <td><b>Confidence</b></td>
+                    </tr>
+                    <tr ng-repeat="rel in filteredRelations">
+                        <td>{{ rel.subject }}</td>
+                        <td>{{ rel.relation }}</td>
+                        <td>{{ rel.object }}</td>
+                        <td>{{ rel.confidence }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <table class="table table-striped" style="border-style:none;">
+                    <tbody>
+                    <tr>
+                        <td><b>Entity</b></td>
+                        <td><b>Type</b></td>
+                    </tr>
+                    <tr ng-repeat="entity in entities">
+                        <td>{{ entity.entity }}</td>
+                        <td>{{ entity.type }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <br/><br/>
+    </div>
+
+    <div class="footer">
+
+    </div>
+</div>
+</body>
+
+<script>
+    angular.module('app', ['angularSpinner'])
+            .controller("AppController", ['$scope', '$http', 'usSpinnerService',
+                function ($scope, $http, usSpinnerService) {
+
+                    $scope.filterButtonValue = 'Filter';
+                    $scope.text = function () { /*
+
+                     The story of the thief who walked out of an expensive Manhattan cigar store with four boxes of medium-blend Dominicans last month actually begins decades earlier, before he was born. It starts in the 1960s, with an encounter between two men that would change both their lives. One of those men was Avo Uvezian, an Armenian jazz musician living in New York City. The other was also a musician, from New Jersey, named Frank Sinatra.
+
+                     Mr. Uvezian was born in 1926 in Beirut. He became an accomplished musician who traveled the Middle East, speaking multiple languages along the way.
+
+                     “I usually count in Armenian in my head,” he told Cigar Journal in an interview this year. “I find the best language to swear in is Turkish, and when dreaming of pretty women, French is the best language.”
+
+                     Playing piano, he led a jazz combo that performed in Lebanon, Iraq and Iran, where he became the personal entertainer of the shah. In 1947, he moved to New York and entered the Juilliard School of Music.
+
+
+                     */
+                    }.toString().split(/\n/).slice(1, -1).join("\n").trim();
+
+                    /*
+
+                     By the 1960s, he had written his own music. One melody stood out.
+
+                     “The song itself is a very simple song,” Mr. Uvezian, 89, said this month by telephone from his home in Orlando, Fla. “You take the thing and you repeat it. ‘Dah-dah-dah-dah-daaaah.’ It’s the same line repeated throughout.”
+
+                     He had a friend who knew Sinatra. The friend set up a meeting and told Mr. Uvezian to bring along his music. Someone else had put lyrics to the melody, and called it “Broken Guitar.”
+
+                     Sinatra gave it a listen.
+
+                     “He said, ‘I love the melody, but change the lyrics,’” Mr. Uvezian recalled. The task was given to studio songwriters, and they came back with new words. Sinatra, legend has it, hated it. “I don’t want to sing this,” he said when he first saw the sheet music, according to James Kaplan’s new book, “Sinatra: The Chairman.” Nonetheless, with his last No. 1 single several years behind him, he was persuaded to record the song in 1966.
+
+                     The title was new, too. “Broken Guitar” was out. The new name was “Strangers in the Night.”
+
+                     */
+
+                    $scope.extractRelationsFromText = function () {
+                        usSpinnerService.spin('spinner');
+
+                        $http.post('/api/extractRelationsFromText', {'text': encodeURIComponent($scope.text)})
+                                .success(function (response) {
+                                    console.log('response : ' + JSON.stringify(response));
+                                    $scope.relations = response.triples;
+                                    $scope.filteredRelations = response.triples;
+                                    $scope.entities = response.entities;
+
+                                    usSpinnerService.stop('spinner');
+                                })
+                    };
+
+                    $scope.extractRelationsFromPdf = function () {
+                        usSpinnerService.spin('spinner');
+
+                        $http.post('/api/extractRelationsFromPdf', {})
+                                .success(function (response) {
+                                    console.log('response : ' + JSON.stringify(response));
+                                    $('#file')
+
+                                    $scope.relations = response.triples;
+                                    $scope.filteredRelations = response.triples;
+                                    $scope.entities = response.entities;
+
+                                    usSpinnerService.stop('spinner');
+                                })
+                    };
+
+                    $scope.filtered = false;
+                    $scope.filter = function () {
+                        $scope.filteredRelations = [];
+
+                        if (!$scope.filtered) {
+                            $scope.relations.forEach(function (r) {
+                                var contains = false;
+
+                                $scope.entities.forEach(function (e) {
+                                    if (r.subject == e.entity || r.object == e.entity) {
+                                        contains = true;
+                                    }
+                                });
+
+                                if (contains) {
+                                    $scope.filteredRelations.push(r);
+                                }
+                            });
+
+                            $scope.filterButtonValue = 'Remove Filter';
+                        } else {
+                            $scope.filteredRelations = $scope.relations;
+                            $scope.filterButtonValue = 'Filter';
+                        }
+
+                        $scope.filtered = !$scope.filtered;
+                    };
+
+                    $scope.getWikiPage = function (title) {
+                        $http.get("api/wiki/page?title=" + title)
+                                .success(function (response) {
+                                    $scope.text = response;
+                                }).error(printError);
+                    };
+
+                    $(function () {
+                        $("#search").autocomplete({
+                            source: "api/wiki/autocomplete",
+                            minLength: 2,
+                            select: function (event, ui) {
+                                $scope.getWikiPage(ui.item.value);
+                            }
+                        });
+                    });
+                }]);
+
+    function printError(e) {
+        console.log(e);
+    }
+</script>
+
+</html>

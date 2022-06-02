@@ -1,0 +1,448 @@
+html {
+    height: 100%;
+}
+
+body {
+    background-color: #FFFFFF;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+@font-face {
+    font-family: Cafeta;
+    src: url('CAFETA__.TTF');
+}
+
+@font-face {
+    font-family: 'ModernPictogramsNormal';
+    src: url('/static/semantic/fonts/modernpics-webfont.eot');
+    src: url('/static/semantic/fonts/modernpics-webfont.eot?#iefix') format('embedded-opentype'),
+    url('/static/semantic/fonts/modernpics-webfont.woff') format('woff'),
+    url('/static/semantic/fonts/modernpics-webfont.ttf') format('truetype'),
+    url('/static/semantic/fonts/modernpics-webfont.svg#ModernPictogramsNormal') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.text {
+    font-family: Cafeta, serif;
+}
+
+#ruler {
+    visibility: hidden;
+    white-space: nowrap;
+}
+
+div#wrapper {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+header {
+    display: block;
+    background-color: #006bff;
+    height: 50px;
+}
+
+div#artist {
+
+}
+
+label#artist_label {
+    color: #006bff;
+    font-weight: bold;
+}
+
+label#artist_text {
+    margin-top: -15px;
+    margin-left: 15px;
+    color: #4D4D4D;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+div#searchbox {
+    display: block;
+    float: left;
+    width: 300px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 15px;
+}
+
+.fs-button {
+    z-index: 100;
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    position: absolute;
+    rightright: 10px;
+    cursor: pointer;
+}
+
+.fs-button:after {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    font-size: 32px;
+    font-family: 'ModernPictogramsNormal';
+    color: rgba(255, 255, 255, .5);
+    cursor: pointer;
+    content: "v";
+}
+
+.fs-button:hover:after {
+    color: rgb(255, 255, 255);
+}
+
+img#buyutec {
+    float: left;
+    width: 30px;
+    height: 30px;
+}
+
+input#searchinput {
+    margin-left: 15px;
+    width: 180px;
+    height: 20px;
+}
+
+img#logo {
+    float: right;
+    margin-top: 5px;
+    margin-right: 20px;
+    width: 178px;
+    height: 40px;
+}
+
+/* page core */
+div#core {
+    display: block;
+    clear: both;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+section#space {
+    /*background-image: url('/images/background.jpg');*/
+    background-size: cover;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 80%;
+    float: left;
+}
+
+div#graph {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+svg {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+section#right {
+    float: left;
+    width: 20%;
+    background-color: white;
+    margin: 0;
+    padding: 0;
+    margin-bottom: 10px;
+    height: 100%;
+}
+
+div#right_inner {
+    margin-left: 10px;
+    margin-top: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    height: 100%;
+}
+
+div#artist {
+
+}
+
+label#artist_label {
+    color: #006bff;
+    font-weight: bold;
+}
+
+label#artist_text {
+    margin-top: -15px;
+    margin-left: 15px;
+    color: #4D4D4D;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+div#video {
+    margin-top: 15px;
+    padding: 0;
+    height: 120px;
+    width: 30px;
+}
+
+div#playlist {
+    height: 66%;
+}
+
+label#playlist_label {
+    color: #4D4D4D;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+div#playlist_inner {
+    background-color: #4D4D4D;
+    margin-right: 10px;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}
+
+circle {
+    stroke: #006bff;
+}
+
+.link {
+    stroke: #006bff;
+}
+
+.node text {
+    pointer-events: none;
+    font-size: 12pt;
+    font-weight: bold;
+    /*fill: #4D4D4D;*/
+    fill: #e6d14a;
+    z-index: 99;
+}
+
+footer {
+    display: block;
+    background-color: #4D4D4D;
+    margin: 0;
+    padding: 0;
+}
+
+.center {
+position: absolute;
+left: 50%;
+top: 50%;
+transform: translate(-50%, -50%);
+padding: 10px;
+}
+
+/* clearfix */
+.clearfix:after {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+}
+
+.clearfix {
+    display: inline-block;
+}
+
+html[xmlns] .clearfix {
+    display: block;
+}
+
+* html .clearfix {
+    height: 1%;
+}
+
+.info-text {
+    color: #4D4D4D;
+}
+
+.info-title {
+    color: #4D4D4D;
+}
+
+.graph-box-edge {
+    height: 350px;
+    width: 300px;
+    background-color: #006bff;
+    position: absolute;
+    top: 350px;
+    left: -290px;
+    background-color: #4f9aff;
+}
+
+.graph-box {
+    margin-top: 10px;
+    margin-left: 10px;
+    background-color: white;
+    height: 330px;
+    width: 280px;
+    overflow-y: scroll;
+    background-color: #66b2dd;
+    box-shadow: 1px 1px 20px 5px #6892fc;
+}
+
+.side-menu {
+    margin-left: 10px;
+    background-color: #6892fc;
+    left: 290px;
+    position: absolute;
+    top: 10px;
+    width: 20px;
+    height: 75px;
+    box-shadow: 1px 1px 20px 10px #6892fc;
+    overflow: hidden; /* Hide scrollbars */
+}
+
+.side-menu.albums {
+    top: 100px;
+}
+
+.side-menu.artists {
+    top: 200px;
+}
+
+.side-menu-edge {
+    height: 100px;
+    margin-left: 20px;
+}
+
+.side-menu p {
+    color: #f6f328;
+    transform: rotate(90deg);
+    transform-origin: left top 0;
+    font-weight: 500;
+    font-size: 17px;
+    font-family: Times New Roman;
+}
+
+/* coloring */
+.graph-box {
+
+
+}
+
+/* Accordion */
+/* Style the buttons that are used to open and close the accordion panel */
+button.accordion {
+    background-color: #eee;
+    color: #f6f328;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    text-align: left;
+    border: none;
+    outline: none;
+    transition: 0.4s;
+}
+
+/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+button.accordion.active, button.accordion:hover {
+    background-color: #ddd;
+}
+
+/* Style the accordion panel. Note: hidden by default */
+div.panel {
+    padding: 0 18px;
+    background-color: white;
+    display: none;
+}
+
+.show_names {top: 75px;
+    position: absolute !important;
+    top: 50px;
+    right: 400px;
+}
+
+.selected-circle {
+    z-index: -1;
+}
+
+button.accordion {
+    background-color: #66b2dd;
+}
+
+button.accordion.active, button.accordion:hover {
+    background-color: #85ceee;
+}
+
+header {
+    /*background-color: #66b2dd;*/
+    background-color: #779ce8;
+}
+
+section#right {
+    background: none;
+}
+
+.info-title, .info-text {
+    /*color: #d9c53f;*/
+    color: #fff;
+}
+
+.pop-up .shadow-wrapper {
+    box-shadow: 0px 0px 5px 10px #71a5df;
+}
+
+.pop-up {
+    background-color: #71a5df;
+    box-shadow: 1px 1px 20px 20px #6892fc;
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+}
+
+.pop-up .block {
+    padding-bottom: 5px;
+}
+
+
+.menu-item {
+    width: 200px;
+}
+
+.menu-item a {
+    color: #f6f328;
+}
+
+.right {
+    right: 0px;
+}
+
+
+.header-items {
+    float: right;
+    padding: 10px 25px 10px 10px;
+}
+
+.header-items span {
+    margin-right: 5px;
+    font-weight: 900;
+    color: white;
+    font-size: 20px;
+}
+
+.header-items span a {
+    color: white;
+}
+
+.header-items span a:hover {
+    text-decoration: none;
+}
+
+.searchbox span a {
+    color: white;
+    padding-left: 5px;
+    font-weight: bold;
+}

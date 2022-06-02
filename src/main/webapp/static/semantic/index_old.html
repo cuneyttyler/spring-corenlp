@@ -1,0 +1,137 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Semantic Space</title>
+    <meta name="description" content="">
+    <link rel="stylesheet" href="static/semantic/style/style.css?v=1">
+    <script
+            src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="static/semantic/js/util.js"></script>
+    <script src="static/semantic/js/semantic-space-1.0.2.js"></script>
+    <script src="static/semantic/js/semantic.js"></script>
+
+    <script>
+        function search(node) {
+            try {
+                semantic.getInstance().foo(this.searchinput.value);
+                return false;
+            } catch (e) {
+                console.log("error : " + e);
+                return false;
+            }
+        };
+        $(document).ready(function() {
+            $('.fs-button').on('click', function() {
+                var elem = document.getElementById('space');
+                if (document.mozFullScreenElement) {
+                    document.mozCancelFullscreen();
+                } else {
+                    elem.mozRequestFullScreen();
+                }
+                ;
+            });
+        });
+    </script>
+
+</head>
+
+<body ng-app="app" ng-controller="Controller">
+<span id="ruler"></span>
+<div id="wrapper">
+    <header>
+        <div id="searchbox">
+            <img src="static/semantic/img/buyutec.png" id="buyutec" />
+
+            <form name="searchForm" action="#"
+                  onsubmit="search(this.searchinput.value);return false;">
+                <input type="text" name="searchinput" id="searchinput"
+                       value="Jeff Buckley">
+            </form>
+        </div>
+        <!--<span class='fs-button'></span>-->
+    </header>
+
+    <div id="core" class="clearfix">
+        <section id="space">
+            <div id="graph">
+                <svg></svg>
+            </div>
+        </section>
+
+        <section id="right">
+            <div id="right_inner">
+                <div id="artist">
+                    <label id="artist_label" class="text">node:</label><br /> <label
+                        id="artist_text" class="text">jeff buckley</label>
+                </div>
+
+                <div>
+                    <!--<label class="info-label mb-15">image:</label>-->
+
+                    <div class="info-image">
+                        <img ng-if="selectedEntity.image"
+                             ng-src="{{selectedEntity.image}}"/>
+                        <img ng-if="!selectedEntity.image && selectedEntity.smallImage"
+                             ng-src="knowledgeBase/api/image/{{selectedEntity.smallImage}}"/>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div ng-if="selectedEntity" class="col-md-12">
+                        <div ng-if="selectedEntity" class="form-group">
+                            <label class="info-title mb-5">{{selectedEntity.name}}</label>
+
+                            <div class="info-text">{{selectedEntity.shortDescription}}</div>
+                        </div>
+
+                        <div ng-if="selectedEntity" class="form-group">
+                            <!--<label class="info-label mb-15">description:</label>-->
+                            <hr style="color:white; margin-top: 10px; margin-bottom:15px;">
+
+                            <div class="info-text description">{{selectedEntity.description}}</div>
+                        </div>
+                        <div class="row link-box">
+                            <div ng-if="selectedEntity && selectedEntity.dbpediaUri" class="form-group col-md-3">
+                                <div class="external-link">
+                                    <a ng-href="{{selectedEntity.dbpediaUri}}" target="_blank">
+                                        <img src="static/knowledge-base/img/dbpedia.png"/>
+                                    </a>
+                                </div>
+                            </div>
+                            <div ng-if="selectedEntity && selectedEntity.wikidataId" class="form-group  col-md-3">
+                                <div class="external-link">
+                                    <a ng-href="https://www.wikidata.org/wiki/{{selectedEntity.wikidataId}}"
+                                       target="_blank">
+                                        <img src="static/knowledge-base/img/wikidata_text.png"/>
+                                    </a>
+                                </div>
+                            </div>
+                            <div ng-if="selectedEntity && selectedEntity.wikipediaUri" class="form-group  col-md-3">
+
+                                <div class="external-link">
+                                    <a ng-href="{{selectedEntity.wikipediaUri}}" target="_blank">
+                                        <img src="static/knowledge-base/img/wikipedia.png"/>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" ng-if="!isEntitySaved() && !propertiesLoading">
+                            <label class="blue">Category</label>
+                            <input type="text" class="form-control" id="entity-category-input">
+                        </div>
+                        <div class="form-group right-save-button">
+                            <input type="button" class="btn btn-default blue" value="Save"
+                                   ng-if="!isEntitySaved() && !propertiesLoading"
+                                   ng-click="saveEntity()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+</body>
+</html>

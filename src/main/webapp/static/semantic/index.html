@@ -1,0 +1,380 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Semantic Space</title>
+    <meta name="description" content="">
+    <link rel="stylesheet" href="static/knowledge-base/style/style.css?v=1">
+    <link rel="stylesheet" href="static/knowledge-base/style/my-common.css?v=1">
+    <link rel="stylesheet" href="static/semantic/style/style.css?v=1">
+    <link rel="stylesheet" href="static/semantic/style/loader.css?v=1">
+
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+
+    <link rel="stylesheet" href="static/knowledge-base/js/lib/jquery-ui.min.css">
+    <script src="static/knowledge-base/js/lib/jquery.min.js"></script>
+    <script src="static/knowledge-base/js/lib/jquery-ui.min.js"></script>
+    <script src="static/knowledge-base/js/lib/underscore-umd-min.js"></script>
+    <script src="static/knowledge-base/js/lib/angular.min.js"></script>
+
+    <!--Angular ngDialog-->
+    <link href="static/knowledge-base/js/lib/ngDialog.min.css" rel="stylesheet"/>
+    <script type="text/javascript" src="static/knowledge-base/js/lib/ngDialog.min.js"></script>
+
+    <!--Bootstrap -->
+    <link rel="stylesheet" href="static/knowledge-base/js/lib/bootstrap.min.css">
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"-->
+    <!--integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">-->
+    <script src="static/knowledge-base/js/lib/bootstrap.min.js"></script>
+
+    <script src="static/common/util.js"></script>
+    <script src="static/semantic/js/util.js"></script>
+    <script src="static/semantic/js/lib/jLouvain.js"></script>
+    <script src="static/semantic/js/lib/bcrypt.min.js"></script>
+    <script src="static/semantic/js/side-menu.js"></script>
+    <script src="static/semantic/js/semantic-space-1.0.4.js"></script>
+    <script src="static/semantic/js/semantic.js"></script>
+
+    <script>
+        function search(node) {
+            try {
+                semantic.getInstance().foo(this.searchinput.value);
+                return false;
+            } catch (e) {
+                console.log("error : " + e);
+                return false;
+            }
+        }
+
+        $(document).ready(function () {
+            $('.fs-button').on('click', function () {
+                var elem = document.getElementById('space');
+                if (document.mozFullScreenElement) {
+                    document.mozCancelFullscreen();
+                } else {
+                    elem.mozRequestFullScreen();
+                }
+            });
+        });
+    </script>
+
+</head>
+
+<body ng-app="app" ng-controller="Controller">
+<div ng-if="allscreenLoading" class="overlay">
+    <div class="lds-ripple center"><div></div><div></div></div>
+</div>
+<span id="ruler"></span>
+
+<div id="wrapper" style="display: none;">
+    <header>
+        <form id="searchbox" class="searchbox form-inline" ng-submit="search()">
+            <img src="static/semantic/img/buyutec.png" class="buyutec" style="margin-right: 10px;"/>
+
+            <div class="form-group">
+                <input type="text" class="form-control" id="search-input" placeholder="Name" ng-model="searchInput">
+            </div>
+            <div class="form-group">
+<!--                <input type="button" class="btn btn-default blue" value="Get User Graph"-->
+<!--                       ng-click="getUserGraph()">-->
+                <span><a href="#" ng-click="openLastFmGraphWindow()">Get Lastfm Graph</a></span>
+                <span><a href="#" ng-click="showHideSimilars()">Show/Hide Similars</a></span>
+                <span><a href="#" ng-click="newGraph()">Create Graph</a></span>
+
+<!--                <input type="button" class="btn btn-default blue" value="Get Lastfm Graph"-->
+<!--                       ng-click="openLastFmGraphWindow()">-->
+<!--                <input type="button" class="btn btn-default blue" value="Show/Hide Similars"-->
+<!--                       ng-click="showHideSimilars()">-->
+                <!--<input type="button" class="btn btn-default blue" value="Community Detection"-->
+                <!--ng-click="detectCommunities()">-->
+<!--                <input type="button" class="btn btn-default blue" value="New Graph"-->
+<!--                       ng-click="newGraph()">-->
+            </div>
+        </form>
+<!--        <div class="form-group header-items">-->
+<!--            <span><a href="#" ng-click="openRegisterWindow()">Register</a></span>-->
+<!--            <span><a href="#" ng-click="openLoginWindow()">Login</a></span>-->
+<!--        </div>-->
+    </header>
+
+    <div id="core" class="clearfix">
+        <section id="space">
+            <div id="graph">
+<!--                <div class="lds-ripple center"><div></div><div></div></div>-->
+
+                <svg>
+
+                    <div class="side-menu-items">
+                        <div class="graph-box-edge graphs">
+                            <div class="graph-box">
+
+                                <button class="accordion" ng-repeat="g in graphs" ng-class='isGraphActive($index)'
+                                        ng-click="getSavedGraph(g)">
+                                    {{g.name}}
+                                </button>
+                            </div>
+                            <a href="#" ng-click="openGraphMenu()">
+                                <div class="side-menu">
+                                    <div class="side-menu-edge">
+                                        <p class="">Graphs</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <div class="graph-box-edge albums">
+                            <div class="graph-box">
+
+                                <button class="accordion" ng-repeat="a in selectedNode.albums"
+                                        ng-click="showTracks(a,selectedNode)">
+                                    {{a.name}}
+                                </button>
+                                <div class="panel" ng-repeat="t in a.tracks">
+                                    <p>{{t.title}}</p>
+                                </div>
+                            </div>
+                            <a href="#" ng-click="openAlbumMenu()">
+                                <div class="side-menu albums">
+                                    <div class="side-menu-edge">
+                                        <p class="">Albums</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <div class="graph-box-edge artists">
+                            <div class="graph-box">
+
+                                <button class="accordion" ng-repeat="n in getSavedNodes()"
+                                        ng-click="">
+                                    {{n.name}}
+                                </button>
+                                <!--<div class="panel" ng-repeat="t in a.tracks">-->
+                                    <!--<p>{{t.title}}</p>-->
+                                <!--</div>-->
+                            </div>
+                            <a href="#" ng-click="openArtistMenu()">
+                                <div class="side-menu artists">
+                                    <div class="side-menu-edge">
+                                        <p class="">Artists</p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </svg>
+            </div>
+
+            <div class="show_names checkbox">
+                <label><input type="checkbox" value="" ng-model="showNames" ng-change="showHideNames()">Show
+                    Names</label>
+            </div>
+        </section>
+
+        <section id="right" ng-if="selectedNode.largeImg">
+            <div id="right_inner">
+                <div>
+                    <!--<label class="info-label mb-15">image:</label>-->
+
+                    <div class="info-image">
+                        <img
+                             ng-src="{{selectedNode.largeImg}}"/>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div ng-if="selectedNode" class="col-md-12">
+                        <div class="form-group">
+                            <label class="info-title mb-5">{{selectedNode.name}}</label>
+
+                            <!--<div class="info-text">{{selectedNode.bioSummary}}</div>-->
+                        </div>
+
+                        <div class="form-group">
+                            <!--<label class="info-label mb-15">description:</label>-->
+                            <hr style="color:white; margin-top: 10px; margin-bottom:15px;">
+
+                            <div class="info-text description" ng-bind-html="selectedNode.bioSummary"></div>
+                        </div>
+                        <div class="row link-box">
+                            <div ng-if="selectedNode.dbpediaUri" class="form-group col-md-3">
+                                <div class="external-link">
+                                    <a ng-href="{{selectedNode.dbpediaUri}}" target="_blank">
+                                        <img src="static/knowledge-base/img/dbpedia.png"/>
+                                    </a>
+                                </div>
+                            </div>
+                            <div ng-if="selectedNode.wikidataId" class="form-group  col-md-3">
+                                <div class="external-link">
+                                    <a ng-href="https://www.wikidata.org/wiki/{{selectedNode.wikidataId}}"
+                                       target="_blank">
+                                        <img src="static/knowledge-base/img/wikidata_text.png"/>
+                                    </a>
+                                </div>
+                            </div>
+                            <div ng-if="selectedNode.wikipediaUri" class="form-group  col-md-3">
+
+                                <div class="external-link">
+                                    <a ng-href="{{selectedNode.wikipediaUri}}" target="_blank">
+                                        <img src="static/knowledge-base/img/wikipedia.png"/>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <!--<div class="form-group" ng-if="!isEntitySaved() && !propertiesLoading">-->
+                        <!--<label class="blue">Category</label>-->
+                        <!--<input type="text" class="form-control" id="entity-category-input">-->
+                        <!--</div>-->
+                        <div class="form-group right-save-button">
+                            <input type="button" class="btn btn-default blue" value="Save"
+                                   ng-if="!selectedNode.saved && showSaveButton()"
+                                   ng-click="saveNode()">
+                            <input type="button" class="btn btn-default blue" value="Remove"
+                                   ng-if="selectedNode.saved"
+                                   ng-click="removeNode()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+
+<script type="text/ng-template" id="new-graph-popup">
+
+    <!-- Page Content #F5F5F5 -->
+    <div class="col-md-3 col-md-offset-5 pop-up new-graph-popup">
+        <!-- Simple Blocks -->
+        <div class="shadow-wrapper">
+            <div class="block mb-0">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="search-input" placeholder="Name"
+                                   ng-model="graphName">
+                        </div>
+                        <form class="form-inline">
+                            <div class="form-group">
+                                <input type="button" class="btn btn-default blue" value="Create"
+                                       ng-click="createGraph()">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</script>
+
+<script type="text/ng-template" id="lastfm-popup">
+
+    <!-- Page Content #F5F5F5 -->
+    <div class="col-md-3 col-md-offset-5 pop-up register-popup">
+        <!-- Simple Blocks -->
+        <div class="shadow-wrapper">
+            <div class="block mb-0">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Lastfm Username</label>
+                            <input type="text" class="form-control" id="lastfm-username-input" placeholder="Lastfm Username"
+                                   ng-model="lastfmUsername">
+
+                        </div>
+                        <form class="form-inline">
+                            <div class="form-group">
+                                <input type="button" class="btn btn-default blue" value="Show"
+                                       ng-click="show()">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</script>
+
+<script type="text/ng-template" id="register-popup">
+
+    <!-- Page Content #F5F5F5 -->
+    <div class="col-md-3 col-md-offset-5 pop-up register-popup">
+        <!-- Simple Blocks -->
+        <div class="shadow-wrapper">
+            <div class="block mb-0">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>E-mail</label>
+                            <input type="text" class="form-control" id="email-input" placeholder="E-mail"
+                                   ng-model="email">
+                            <label>Username</label>
+                            <input type="text" class="form-control" id="username-input" placeholder="Username"
+                                   ng-model="username">
+                            <label>Lastfm Username</label>
+                            <input type="text" class="form-control" id="lastfm-username-input" placeholder="Lastfm Username"
+                                   ng-model="lastfmUsername">
+                            <label>Password</label>
+                            <input type="password" class="form-control" id="password-input" placeholder="Password"
+                                   ng-model="password">
+
+                        </div>
+                        <form class="form-inline">
+                            <div class="form-group">
+                                <input type="button" class="btn btn-default blue" value="Register"
+                                       ng-click="register()">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</script>
+
+<script type="text/ng-template" id="login-popup">
+
+    <!-- Page Content #F5F5F5 -->
+    <div class="col-md-3 col-md-offset-5 pop-up register-popup">
+        <!-- Simple Blocks -->
+        <div class="shadow-wrapper">
+            <div class="block mb-0">
+
+    <div class="row">
+        <div class="col-md-12">
+            <form id='login-form' name='login-form' class="form-inline"  action="login" method='POST'>
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" class="form-control" id="username-input" placeholder="Username"
+                       ng-model="username" name="j_username">
+                <label>Password</label>
+                <input type="password" class="form-control" id="password-input" placeholder="Password"
+                       ng-model="password" name="j_password">
+
+            </div>
+                <div class="form-group">
+                    <input type="button" class="btn btn-default blue" value="Login"
+                           ng-click="login()">
+                    <label>{{message}}</label>
+                </div>
+            </form>
+        </div>
+    </div>
+
+            </div>
+        </div>
+    </div>
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,8 @@
+.idea
+entity-linker.iml
+target
+bower_components
+node_modules
+classifiers
+source_code
+src/main/webapp/static/emotion-detection/songs

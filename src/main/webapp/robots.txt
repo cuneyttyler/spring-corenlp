@@ -1,0 +1,8 @@
+User-agent: Googlebot-Image
+Disallow: /
+
+User-agent: *
+Sitemap: //showroomist.co/sitemap.xml
+Disallow: /images/
+Disallow: /cgi-bin/
+Disallow: /admin/

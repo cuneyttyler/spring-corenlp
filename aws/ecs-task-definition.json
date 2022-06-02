@@ -1,0 +1,33 @@
+{
+  "family": "SemanticSpace3",
+  "containerDefinitions": [
+    {
+      "name": "SemanticSpace3",
+      "image": "618050051552.dkr.ecr.ap-southeast-2.amazonaws.com/studyapp:latest",
+      "cpu": 0,
+      "memory": 256,
+      "portMappings": [
+        {
+          "hostPort": 8080,
+          "protocol": "tcp",
+          "containerPort": 8080
+        }
+      ],
+      "environment": [
+        {
+          "name": "spring.profiles.active",
+          "value": "PRD"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-create-group": "true",
+          "awslogs-group": "/ecs/SemanticSpace3",
+          "awslogs-region": "ap-southeast-2",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+<head>
+</head>
+<body>
+
+<!-- Page Content #F5F5F5 -->
+<div class="pop-up">
+    <div class="blurred-image">
+        <img ng-if="!isEntitySaved()"
+             ng-src="{{image}}" class="blurred"/>
+        <img ng-if="isEntitySaved()"
+             ng-src="knowledgeBase/api/image/{{image}}" class="blurred"/>
+
+        <img ng-if="!isEntitySaved()"
+             ng-src="{{image}}"/>
+        <img ng-if="isEntitySaved()"
+             ng-src="knowledgeBase/api/image/{{image}}"/>
+    </div>
+</div>
+
+</body>
+</html>

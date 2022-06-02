@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+</head>
+<body>
+
+<!-- Page Content #F5F5F5 -->
+<div class="col-md-3 col-md-offset-5 pop-up login-pop-up">
+    <!-- Simple Blocks -->
+    <div class="shadow-wrapper">
+        <div class="content">
+            <span class="pop-up-title">LOGIN</span>
+            <hr class="pop-up-title-seperator">
+            <div class="block mb-0">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <form id="login-form">
+                            <div class="form-group">
+                                <label>Username</label>
+                                <input type="text" class="form-control" name="j_username" ng-model="username"
+                                       placeholder="Your username">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input type="password" name="j_password" class="form-control" ng-model="password"
+                                       placeholder="Password">
+                            </div>
+                            <div class="form-check">
+                                <!--<input type="checkbox" class="form-check-input" id="exampleCheck1">-->
+                                <!--<label class="form-check-label">Check me out</label>-->
+                            </div>
+                            <span class="validation-message" style="display:none;">{{validationMessage}}</span>
+                            <span class="success-message" style="display:none;">{{successMessage}}</span>
+                            <input type="button" class="btn btn-default blue" id="login-button" value="Log in"
+                                   ng-click="login()">
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

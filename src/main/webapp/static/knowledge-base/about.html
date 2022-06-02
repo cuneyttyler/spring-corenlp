@@ -1,0 +1,210 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>KnowledgeBase</title>
+    <meta name="description" content="KnowledgeBase">
+
+    <script src="static/knowledge-base/js/lib/d3.v3.min.js"></script>
+
+    <link rel="stylesheet" href="static/knowledge-base/js/lib/jquery-ui.css">
+    <script src="static/knowledge-base/js/lib/jquery.min.js"></script>
+    <script src="static/knowledge-base/js/lib/jquery-ui.js"></script>
+    <script src="static/knowledge-base/js/lib/underscore-min.js"></script>
+    <script src="static/knowledge-base/js/lib/angular.min.js"></script>
+
+    <!--Angular ngDialog-->
+    <link href="static/knowledge-base/js/lib/ngDialog/ngDialog.min.css" rel="stylesheet"/>
+    <script type="text/javascript" src="static/knowledge-base/js/lib/ngDialog/ngDialog.min.js"></script>
+
+    <!--Leaflet-->
+    <link rel="stylesheet" href="static/knowledge-base/js/lib/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="static/knowledge-base/js/lib/leaflet.js"></script>
+
+    <!--Bootstrap -->
+    <link rel="stylesheet" href="static/knowledge-base/js/lib/bootstrap/css/bootstrap.min.css">
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"-->
+    <!--integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">-->
+    <script src="static/knowledge-base/js/lib/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="static/knowledge-base/style/style.css?v=1">
+    <link rel="stylesheet" href="static/knowledge-base/style/my-common.css?v=1">
+    <script src="static/knowledge-base/js/lib/xml2json.js"></script>
+    <script src="static/knowledge-base/js/lib/ImageResolver.0.5.4.js"></script>
+    <script src="static/knowledge-base/js/lib/crypto-js/crypto-js.js"></script>
+    <script src="static/common/util.js"></script>
+    <script src="static/knowledge-base/js/lod-utils.js"></script>
+    <script src="static/knowledge-base/js/lib/rel-finder/SPARQLQueryBuilder.js"></script>
+    <script src="static/knowledge-base/js/wikidata.js"></script>
+    <script src="static/knowledge-base/js/dbpedia.js"></script>
+    <script src="static/knowledge-base/js/lod-service.js"></script>
+    <script src="static/knowledge-base/js/autocomplete-service.js"></script>
+    <script src="static/knowledge-base/js/user-confirmed.js"></script>
+</head>
+
+<body ng-app="app" ng-controller="Controller">
+
+<div class="wrapper" style="display: none;">
+<header>
+    <div class="header-items">
+        <span><a href="#" ng-click="openLogin()">Log In</a></span>
+        <span><a href="#" ng-click="openSignup()">Sign Up</a></span>
+        <span><a href="#" ng-click="openAbout()">About</a></span>
+    </div>
+</header>
+
+<div class="core clearfix row">
+<section class="space container col-md-9">
+
+<div class="row">
+
+    <div class="col-md-12 user-confirmed">
+        <div class="message">
+            Your account has been confirmed. You are being redirected to main page in {{timer}} seconds.
+        </div>
+    </div>
+
+</div>
+
+</section>
+
+<section class="footer">
+
+</section>
+</div>
+</div>
+
+<script type="text/ng-template" id="signup-popup">
+
+    <!-- Page Content #F5F5F5 -->
+    <div class="col-md-3 col-md-offset-5 pop-up signup-pop-up">
+        <!-- Simple Blocks -->
+        <div class="shadow-wrapper">
+            <span class="pop-up-title">SIGNUP</span>
+            <hr class="pop-up-title-seperator">
+            <div class="block mb-0">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <form>
+                            <div class="form-group">
+                                <label>Username</label>
+                                <input type="text" class="form-control"  ng-model="user.username" placeholder="Your username">
+                            </div>
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input type="password" class="form-control"  ng-model="password" placeholder="Password">
+                            </div>
+                            <div class="form-group">
+                                <label>Email address</label>
+                                <input type="email" class="form-control" ng-model="user.email" placeholder="E-mail">
+                                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                            </div>
+                            <div class="form-group">
+                                <label>First Name</label>
+                                <input type="text" class="form-control"  ng-model="user.firstName" placeholder="First Name">
+                            </div>
+                            <div class="form-group">
+                                <label>Last Name</label>
+                                <input type="text" class="form-control"  ng-model="user.lastName" placeholder="Last Name">
+                            </div>
+                            <div class="form-check">
+                                <!--<input type="checkbox" class="form-check-input" id="exampleCheck1">-->
+                                <!--<label class="form-check-label">Check me out</label>-->
+                            </div>
+                            <span class="validation-message" style="display:none;">{{validationMessage}}</span>
+                            <input type="button" class="btn btn-default blue" value="Sign up"
+                                   ng-click="signupUser()">
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</script>
+
+<script type="text/ng-template" id="login-popup">
+
+    <!-- Page Content #F5F5F5 -->
+    <div class="col-md-3 col-md-offset-5 pop-up login-pop-up">
+        <!-- Simple Blocks -->
+        <div class="shadow-wrapper">
+            <span class="pop-up-title">LOGIN</span>
+            <hr class="pop-up-title-seperator">
+            <div class="block mb-0">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <form>
+                            <div class="form-group">
+                                <label>Username</label>
+                                <input type="text" class="form-control"  ng-model="username" placeholder="Your username">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                            </div>
+                            <div class="form-check">
+                                <!--<input type="checkbox" class="form-check-input" id="exampleCheck1">-->
+                                <!--<label class="form-check-label">Check me out</label>-->
+                            </div>
+                            <span class="validation-message" style="display:none;">{{validationMessage}}</span>
+                            <span class="success-message" style="display:none;">{{successMessage}}</span>
+                            <input type="button" class="btn btn-default blue" value="Log in"
+                                   ng-click="login()">
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</script>
+
+<script type="text/ng-template" id="image-popup">
+
+    <!-- Page Content #F5F5F5 -->
+    <div class="pop-up">
+        <div class="blurred-image">
+            <img ng-if="!isEntitySaved()"
+                 ng-src="{{image}}" class="blurred"/>
+            <img ng-if="isEntitySaved()"
+                 ng-src="knowledgeBase/api/image/{{image}}" class="blurred"/>
+
+            <img ng-if="!isEntitySaved()"
+                 ng-src="{{image}}"/>
+            <img ng-if="isEntitySaved()"
+                 ng-src="knowledgeBase/api/image/{{image}}"/>
+        </div>
+    </div>
+
+</script>
+
+
+<script type="text/ng-template" id="prompt-popup">
+
+    <!-- Page Content #F5F5F5 -->
+    <div class="col-md-3 col-md-offset-5 pop-up prompt-popup">
+        <!-- Simple Blocks -->
+        <div class="shadow-wrapper">
+            <div class="block mb-0">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <span>{{message}}</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</script>
+
+</body>
+</html>

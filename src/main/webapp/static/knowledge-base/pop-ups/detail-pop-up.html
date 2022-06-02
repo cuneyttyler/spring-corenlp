@@ -1,0 +1,370 @@
+<!doctype html>
+<html>
+<head>
+</head>
+<body>
+
+<div ng-if="propertiesLoading" class="pop-up-overlay">
+    <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>
+</div>
+
+<!-- Page Content #F5F5F5 -->
+<div class="col-md-10 col-md-offset-1 pop-up">
+<!-- Simple Blocks -->
+<div class="shadow-wrapper">
+<div class="block mb-0">
+<div ng-if="annotationEntityLoading" class="overlay">
+    <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>
+</div>
+
+<section class="main-topic content container">
+
+<div class="row topic">
+<div class="col-md-3">
+    <div class="pop-up-image">
+        <a href="#" ng-click="openImage(selectedEntity,entityImage)">
+            <img ng-if="!isEntitySaved() && selectedEntity.image"
+                 ng-src="{{entityImage}}"/>
+            <img ng-if="isEntitySaved() && selectedEntity.image"
+                 ng-src="knowledgeBase/api/image/{{entityImage}}"/>
+            <img ng-if="!selectedEntity.image && selectedEntity.smallImage"
+                 ng-src="knowledgeBase/api/image/{{selectedEntity.smallImage}}"/>
+            <img ng-if="!selectedEntity.image && !selectedEntity.smallImage && selectedEntity.id"
+                 class="image-placeholder"
+                 src="static/knowledge-base/img/image_placeholder.png" ng-click="uploadEntityImage()">
+        </a>
+
+        <!--<img ng-if="!isEntitySaved() || (selectedEntity.image || selectedEntity.smallImage)" ng-src="{{getImageUrl()}}"/>-->
+    </div>
+    <div class="show-add-custom-properties">
+        <div class="row">
+            <div class="col-md-12" ng-if="isEntitySaved() && isLoggedIn()">
+                <label class="custom-property-add-title"
+                       title="customPropertyAddTitle">
+                    <a href="#" ng-click="showCustomProperties()" class="show">Show</a>
+                    /
+                    <a href="#" ng-click="addCustomProperties()" class="add not-selected">Add</a>
+
+                    Custom Properties
+                </label>
+            </div>
+            <div class="col-md-12" ng-if="!isEntitySaved() && !isLoggedIn()">
+                <label class="custom-property-add-title"
+                       title="customPropertyAddTitle">
+                    Properties
+                </label>
+            </div>
+        </div>
+        <div class="show-custom-properties">
+            <div class="row property-filter-row">
+                <div class="col-md-12">
+                    <div class="property-box-search-row">
+                        <input type="text" class="form-control search-filter-input"
+                               ng-model="propertySearchFilter"
+                               placeholder="Search...">
+                    </div>
+                    <div class="filter">
+                        <a href="#" ng-click="showOnlyCustomProperties()" class="custom">Custom</a>
+                        <a href="#" ng-click="showOnlyFilteredProperties()"
+                           class="filtered selected">Filtered</a>
+                        <a href="#" ng-click="showAllProperties()" class="all">All</a>
+                    </div>
+                </div>
+            </div>
+            <div class="row ">
+                <div class="col-md-12 property-box" ng-show="selectedEntity.entityType != 'web-page'"
+                     ng-class="propertyBoxClass">
+                    <div>
+
+                        <div ng-repeat="property in filteredProperties()">
+                            <label class="property-value">{{property.name}}</label>
+                            <br>
+
+                            <div ng-repeat="val in property.values">
+                                <label class="property-value"
+                                       ng-if="!isPropertyLink(val)">{{val.value}}</label>
+                                <label class="property-value" ng-if="isPropertyLink(val)">
+                                    <a ng-if="(val.datatype != 'external-id' && isDbpediaResource(val) || val.datatype == 'wikibase-item')
+                            || val.source == 'custom'"
+                                       href="#" ng-click="openProperty(val)">
+                                        {{val.valueLabel}}
+                                    </a>
+                                    <a ng-if="val.datatype != 'wikibase-item' && val.datatype != 'external-id'  && !isDbpediaResource(val)"
+                                       ng-href="{{val.value}}" target="_blank">
+                                        <span ng-if="val.valueLabel">{{val.valueLabel}}</span>
+                                        <span ng-if="!val.valueLabel">{{val.value}}</span>
+                                    </a>
+                                    <a ng-if="val.datatype == 'external-id'"
+                                       ng-href="{{getExternalUrl(val)}}" target="_blank">
+                                        {{getExternalUrl(val)}}
+                                    </a>
+                                </label>
+                            </div>
+                            <hr class="property-divider">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row add-custom-properties" style="display:none;">
+            <div class="col-md-12" style="padding-left: 0;">
+                <form id="searchbox" class="searchbox form-inline">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Property"
+                               id="custom-property-input">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Object"
+                               id="custom-object-input">
+                    </div>
+                    <div class="form-group">
+                        <input type="button" class="btn btn-default blue" value="Save"
+                               ng-click="saveCustomProperty()" ng-disabled="isSaveCustomPropertyDisabled()">
+                    </div>
+                </form>
+
+                <div class="col-md-12">
+                    <label class="property-value" style="color: #fff;">{{selectedCustomProperty.name}}</label>
+                    <br>
+
+                    <div ng-repeat="val in selectedCustomProperty.values">
+                        <label class="property-value"
+                               ng-if="!isPropertyLink(val)">{{val.value}}</label>
+                        <label class="property-value" ng-if="isPropertyLink(val)">
+                            <a ng-if="(val.datatype != 'external-id' && isDbpediaResource(val) || val.datatype == 'wikibase-item')
+                            || val.source == 'custom'"
+                               href="#" ng-click="openProperty(val)">
+                                {{val.valueLabel}}
+                            </a>
+                            <a ng-if="val.datatype != 'wikibase-item' && val.datatype != 'external-id'  && !isDbpediaResource(val)"
+                               ng-href="{{val.value}}" target="_blank">
+                                <span ng-if="val.valueLabel">{{val.valueLabel}}</span>
+                                <span ng-if="!val.valueLabel">{{val.value}}</span>
+                            </a>
+                            <a ng-if="val.datatype == 'external-id'"
+                               ng-href="{{getExternalUrl(val)}}" target="_blank">
+                                {{getExternalUrl(val)}}
+                            </a>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md-9">
+    <div class="detail-info">
+
+
+        <div class="text">
+            <label class="info-title mb-5">{{selectedEntity.name}}</label>
+
+            <div class="info-text info-summary">{{infoSummary}}</div>
+
+            <div class="info-text" compile="descriptionShown"></div>
+        </div>
+        <div class="sub-topic" ng-if="selectedSideEntity">
+            <div class="sub-topic-inner">
+                <div>
+                    <div class="browser-arrows">
+                        <a href="#" ng-click="openLastProperty()">
+                    <span class="glyphicon glyphicon-chevron-left"
+                          ng-if="selectedSideEntityIndex > 0" style="float:left"></span>
+                        </a>
+                        <a href="#" ng-click="openNextProperty()">
+                    <span class="glyphicon glyphicon-chevron-right"
+                          ng-if="selectedSideEntityIndex < selectedSideEntities.length - 1" style="float:right">
+            </span>
+                        </a>
+                    </div>
+                    <!--<label class="info-label mb-15">image:</label>-->
+                    <a href="#" ng-click="openImage(selectedSideEntity,sideEntityImage)">
+
+                        <div class="info-image">
+                            <img ng-if="!isAnnotationEntitySaved() && selectedSideEntity.image"
+                                 ng-src="{{selectedSideEntity.image}}"/>
+                            <img ng-if="isAnnotationEntitySaved() && selectedSideEntity.image"
+                                 ng-src="knowledgeBase/api/image/{{selectedSideEntity.image}}"/>
+                            <img ng-if="!selectedSideEntity.image && selectedSideEntity.smallImage"
+                                 ng-src="knowledgeBase/api/image/{{selectedSideEntity.smallImage}}"/>
+                            <img ng-if="!selectedSideEntity.image && !selectedSideEntity.smallImage &&
+                    selectedSideEntity.entityType == 'non-semantic-web' && !selectedSideEntity.id"
+                                 class="image-placeholder"
+                                 src="static/knowledge-base/img/image_placeholder.png" ng-click="uploadImage()">
+
+                            <!--<img ng-if="!isEntitySaved() || (selectedEntity.image || selectedEntity.smallImage)" ng-src="{{getImageUrl()}}"/>-->
+                        </div>
+                    </a>
+                </div>
+
+                <div class="row">
+                    <div ng-if="selectedSideEntity" class="col-md-12">
+                        <div ng-if="selectedSideEntity" class="form-group">
+                            <label class="info-title mb-5">{{selectedSideEntity.name}}</label>
+
+                            <div ng-if="selectedSideEntity.entityType == 'semantic-web'"
+                                 class="info-text short-description">
+                                {{selectedSideEntity.shortDescription}}
+                            </div>
+                            <div class="form-group"
+                                 ng-if="selectedSideEntity.entityType == 'non-semantic-web' && !selectedSideEntity.id">
+                                <input type="text" class="form-control pop-up-entity-text-input"
+                                       ng-value="selectedSideEntity.shortDescription"
+                                       placeholder="Short Description">
+                            </div>
+                        </div>
+
+                        <div ng-if="selectedSideEntity" class="form-group">
+                            <!--<label class="info-label mb-15">description:</label>-->
+                            <hr style="color:white; margin-top: 10px; margin-bottom:15px;">
+
+                            <div ng-if="selectedSideEntity.entityType == 'semantic-web'"
+                                 class="info-text description" compile="selectedSideEntity.descriptionShown">
+                            </div>
+                            <div class="form-group"
+                                 ng-if="selectedSideEntity.entityType == 'non-semantic-web' && !selectedSideEntity.id">
+                                <input type="text" class="form-control pop-up-entity-text-input"
+                                       ng-value="selectedSideEntity.description"
+                                       placeholder="Description">
+                            </div>
+                        </div>
+                        <div class="row link-box">
+                            <div ng-if="selectedSideEntity && selectedSideEntity.dbpediaUri"
+                                 class="form-group col-md-3">
+                                <div class="external-link">
+                                    <a ng-href="{{selectedSideEntity.dbpediaUri}}" target="_blank">
+                                        <img src="static/knowledge-base/img/dbpedia.png"/>
+                                    </a>
+                                </div>
+                            </div>
+                            <div ng-if="selectedSideEntity && selectedSideEntity.wikidataId"
+                                 class="form-group  col-md-3">
+                                <div class="external-link">
+                                    <a ng-href="https://www.wikidata.org/wiki/{{selectedSideEntity.wikidataId}}"
+                                       target="_blank">
+                                        <img src="static/knowledge-base/img/wikidata_text.png"/>
+                                    </a>
+                                </div>
+                            </div>
+                            <div ng-if="selectedSideEntity && selectedSideEntity.wikipediaUri"
+                                 class="form-group  col-md-3">
+
+                                <div class="external-link">
+                                    <a ng-href="{{selectedSideEntity.wikipediaUri}}" target="_blank">
+                                        <img src="static/knowledge-base/img/wikipedia.png"/>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="category-input" ng-if="isLoggedIn()">
+                            <div class="form-group" ng-if="isEntitySaved() && !isSideEntitySaved()">
+                                <input type="text" class="form-control" id="side-entity-topic-input"
+                                       placeholder="Topic">
+                            </div>
+                            <div class="form-group" ng-if="isEntitySaved() && !isSideEntitySaved()">
+                                <input type="text" class="form-control" id="side-entity-category-input"
+                                       placeholder="Category">
+                            </div>
+                            <div class="form-group" ng-if="isEntitySaved() && !isSideEntitySaved()">
+                                <input type="text" class="form-control" id="side-entity-subcategory-input"
+                                       placeholder="SubCategory">
+                            </div>
+                        </div>
+                        <div class="form-group right-save-button" ng-if="isLoggedIn()">
+                            <input type="button" class="btn btn-default blue" value="Save"
+                                   ng-if="isCustomAnnotation() && !isCustomAnnotationSaved()"
+                                   ng-click="saveCustomAnnotation()">
+                        </div>
+                        <div class="form-group right-save-button">
+                            <input type="button" class="btn btn-default blue" value="Save"
+                                   ng-if="!isSideEntitySaved()"
+                                   ng-click="saveSideEntity()">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!--<div class="show-more-less">-->
+        <!--<a href="#" ng-if="displayShowMore" ng-click="showMore()">Show more...</a>-->
+        <!--<a href="#" ng-if="displayShowLess" ng-click="showLess()">Show less...</a>-->
+        <!--</div>-->
+
+        <!--<div class="show-more-less">-->
+        <!--<a href="#" ng-if="displayShowNotes" ng-click="showNotes()">Show notes</a>-->
+        <!--<a href="#" ng-if="displayHideNotes" ng-click="hideNotes()">Hide notes</a>-->
+        <!--</div>-->
+    </div>
+</div>
+</div>
+<div class="row" style="margin-top: 10px;" ng-if="isWebPageEntity()">
+    <div class="col-md-12">
+        <a target="_blank" ng-href="{{selectedEntity.webUri}}">
+            Go to web page
+        </a>
+    </div>
+</div>
+<div class="edit-topic" ng-if="isLoggedIn()">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="notes">
+                <div class="form-group">
+                    <div class="category-input">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="popup-entity-topic-input"
+                                   placeholder="Topic">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="popup-entity-category-input"
+                                   placeholder="Category">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="popup-entity-subcategory-input"
+                                   placeholder="SubCategory">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="notes">
+                <div class="form-group">
+                    <textarea placeholder="Take notes here..." class="form-control" rows="5"
+                              ng-model="selectedEntity.note"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group" ng-if="isLoggedIn()">
+                <input type="button" class="btn btn-default blue" value="Save"
+                       ng-if="!isEntitySaved() && !propertiesLoading"
+                       ng-click="saveEntity()">
+                <input type="button" class="btn btn-default blue" value="Save"
+                       ng-if="isEntitySaved() && !propertiesLoading"
+                       ng-click="updateEntity()">
+                <input type="button" class="btn btn-default blue" value="Remove"
+                       ng-if="isEntitySaved() && !propertiesLoading"
+                       ng-click="openRemoveConfirmation()">
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+
+
+</div>
+</div>
+</div>
+
+<div class="custom-context-menu annotation-results" ng-if="customAnnotationResults.length > 0">
+    <ul>
+        <a ng-repeat="result in customAnnotationResults" href="#" ng-click="openCustomAnnotation(result)">
+            <li>{{result.label}}</li>
+        </a>
+    </ul>
+</div>
+
+</body>
+</html>

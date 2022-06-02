@@ -1,0 +1,14 @@
+<html>
+
+<head></head>
+
+<body>
+<p>Dear ${firstName} ${lastName},</p>
+<p>Your account has been confirmed. Please follow the link below to go the the application.</p>
+<br>
+<a href="http://localhost:8080/knowledge-base">http://localhost:8080/knowledge-base</a>
+<br>
+<p>Thanks.</p>
+</body>
+
+</html>

@@ -1,0 +1,93 @@
+header, .top-menu-item, section.right {
+    background-color: #8298b3;
+}
+
+header {
+    box-shadow: 0 0 5px 3px #8298b3;;
+}
+
+body,.search-filter-input {
+    background-color: #9cb6d7;;
+}
+
+section.right {
+    box-shadow: 0 0 5px 3px #8298b3;
+}
+
+.side-menu-item:hover {
+    background: #859bb7;
+}
+
+.side-menu-item {
+    background: #8ea6c4;
+}
+
+.top-menu-item:hover{
+    background: #7b90a9;
+}
+
+.figure-text {
+    border: 2px dashed #9ed1d7;
+}
+
+.pop-up,
+.pop-up .sub-topic,
+.notes textarea,
+.category-input input,
+.notes .category-input input,
+.show-custom-properties .property-box-search-row .search-filter-input{
+    background-color: #8faed2;
+}
+
+.pop-up .sub-topic {
+    box-shadow: none;
+}
+/*******/
+
+/* Input Placeholders */
+ {
+    color: white;
+}
+
+.notes textarea::-webkit-input-placeholder,
+.category-input input::-webkit-input-placeholder,
+.notes .category-input input::-webkit-input-placeholder,
+.show-custom-properties .property-box-search-row .search-filter-input::-webkit-input-placeholder{
+    color: white;
+}
+/*******/
+
+/**/
+.pop-up .property-box .property-value a:hover, .info-text a:hover {
+    color: #556fa6
+}
+
+.pop-up .property-box .property-value a, .info-text > a {
+    color: #6787ca
+}
+
+.edit-topic .notes textarea, .category-input input, .notes .category-input input {
+    color: white;
+}
+
+.side-menu-item a:hover, .side-menu-item a:hover {
+    color: #bdd0dd;
+}
+
+.top-menu-item a, .side-menu-item a {
+    color: #d9effe;
+}
+
+
+.pop-up .sub-topic .sub-topic-inner .browser-arrows a {
+    color: #c4e0ff;
+}
+
+.pop-up .sub-topic .sub-topic-inner .browser-arrows a:hover {
+    color: #a1b8d1
+}
+
+.info-image > img, .pop-up-image img {
+    border: 1px solid #516683;
+}
+

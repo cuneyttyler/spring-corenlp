@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Created using XmlSitemapGenerator.org - Free HTML, RSS and XML sitemap generator-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>http://showroomist.co/register</loc>
+    <lastmod>2015-03-09</lastmod>
+    <changefreq>Daily</changefreq>
+  </url>
+  <url>
+    <loc>http://showroomist.co/login</loc>
+    <lastmod>2015-03-09</lastmod>
+    <changefreq>Daily</changefreq>
+  </url>
+  <url>
+    <loc>http://showroomist.co/about</loc>
+    <lastmod>2015-03-09</lastmod>
+    <changefreq>Daily</changefreq>
+  </url>
+  <url>
+    <loc>http://showroomist.co/services</loc>
+    <lastmod>2015-03-09</lastmod>
+    <changefreq>Daily</changefreq>
+  </url>
+  <url>
+    <loc>http://showroomist.co/contact</loc>
+    <lastmod>2015-03-09</lastmod>
+    <changefreq>Daily</changefreq>
+  </url>
+  <url>
+    <loc>http://showroomist.co/</loc>
+    <lastmod>2015-03-09</lastmod>
+    <changefreq>Daily</changefreq>
+  </url>
+</urlset>
+<!--<guid value="7c9fb4ab-8688-43b1-9ad0-5bb23fe90499" />-->
+<!--Created using XmlSitemapGenerator.org - Free HTML, RSS and XML sitemap generator-->
